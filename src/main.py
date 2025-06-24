@@ -1,7 +1,7 @@
 import sys
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__),"src/"))
-from TextNode import TextType
+from TextNode import TextType,TextNode
 from Htmlnode import LeafNode
 
 
@@ -27,5 +27,24 @@ def text_node_to_html(text_node):
     return TEXT_TYPE[text_node.text_type](text_node)
     
     
+        
+def split_node_delimiter(old_nodes,delimiter, text_type):
+    final_nodes = []
+    for old_node in old_nodes:
+        if old_node.text_type != TextType.TEXT:
+            final_nodes.append(old_node)
+            continue
+        splitted = old_node.text.split(delimiter)
+        if len(splitted) % 2 == 0:
+            raise Exception("delimiter not closed")
+        for i in range(len(splitted)):
+            if splitted[i] == "":
+                continue
+            if i % 2 == 0:
+                final_nodes.append(TextNode(splitted[i],TextType.TEXT))
+            else:
+                final_nodes.append(TextNode(splitted[i],text_type))
+    return final_nodes
+                
         
         
