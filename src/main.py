@@ -1,5 +1,6 @@
 import sys
 import os
+import re
 sys.path.append(os.path.join(os.path.dirname(__file__),"src/"))
 from TextNode import TextType,TextNode
 from Htmlnode import LeafNode
@@ -46,5 +47,15 @@ def split_node_delimiter(old_nodes,delimiter, text_type):
                 final_nodes.append(TextNode(splitted[i],text_type))
     return final_nodes
                 
-        
-        
+    
+
+def extract_markdown_images(text):
+    matches = re.findall(r"!\[([^\[\]]*)\]\(([^\(\)]*)\)",text)
+    print(type(matches))
+    return matches
+
+
+def extract_markdown_links(text):
+    
+    matches = re.findall(r"(?<!!)\[([^\[\]]*)\]\([([^\(\)]]*)\)")
+    return matches
