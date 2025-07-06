@@ -1,16 +1,4 @@
 
-
-
-
-
-
-
-
-
-
-
-
-
 class HTMLNode():
     
     
@@ -69,7 +57,7 @@ class ParentNode(HTMLNode):
     
     
     def __init__(self, tag, children, props=None):
-        super().__init__(tag=tag, children=children, props=props)
+        super().__init__(tag, children, props)
         self.tag = tag
         self.children = children
         self.props = props
@@ -82,5 +70,5 @@ class ParentNode(HTMLNode):
         text = ""
         for child in self.children:
             text += child.to_html()
-        return f'<{self.tag}>' + text + f'</{self.tag}>'
+        return f'\n<{self.tag}>' + text + f'</{self.tag}>'
         

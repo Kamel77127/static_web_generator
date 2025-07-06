@@ -1,61 +1,57 @@
 import sys
 import os
 import re
+import shutil
 sys.path.append(os.path.join(os.path.dirname(__file__),"src/"))
 from TextNode import TextType,TextNode
 from Htmlnode import LeafNode
+from BlockType import markdown_to_html_node
 
-
-TEXT_TYPE = {
-    TextType.TEXT : lambda node: LeafNode(None,node.text),
-    TextType.BOLD : lambda node: LeafNode("b",node.text),
-    TextType.ITALIC : lambda node: LeafNode("i",node.text),
-    TextType.CODE : lambda node: LeafNode("code",node.text),
-    TextType.LINK : lambda node: LeafNode("a",node.text),
-    TextType.IMAGE : lambda node: LeafNode("img","",{"src":node.url,"alt":node.text})
-}
-
-
-
-
-
-
-
-def text_node_to_html(text_node):
-    if text_node.text_type not in TEXT_TYPE:
-        raise Exception("Not in available types")
-
-    return TEXT_TYPE[text_node.text_type](text_node)
+ 
+      
+def static_to_public_path():
+    public_path = os.path.join(os.path.dirname(__file__),"../public")
+    static_path = os.path.join(os.path.dirname(__file__),"../static")
+    if os.path.exists(public_path):
+        shutil.rmtree(public_path)
+        os.mkdir(public_path)
     
-    
+    def copy_src_to_dst(src,dst):
         
-def split_node_delimiter(old_nodes,delimiter, text_type):
-    final_nodes = []
-    for old_node in old_nodes:
-        if old_node.text_type != TextType.TEXT:
-            final_nodes.append(old_node)
-            continue
-        splitted = old_node.text.split(delimiter)
-        if len(splitted) % 2 == 0:
-            raise Exception("delimiter not closed")
-        for i in range(len(splitted)):
-            if splitted[i] == "":
-                continue
-            if i % 2 == 0:
-                final_nodes.append(TextNode(splitted[i],TextType.TEXT))
-            else:
-                final_nodes.append(TextNode(splitted[i],text_type))
-    return final_nodes
-                
+        for item in os.listdir(src):
+            src_item = os.path.join(src,item)
+            dst_item = os.path.join(dst,item)
+            if os.path.isfile(src_item):
+                shutil.copy(src_item,dst)
+                return
+            elif os.path.isdir(src_item):
+                os.mkdir(os.path.join(dst,item))
+                copy_src_to_dst(src_item,dst_item)
+       
+    return copy_src_to_dst(static_path , public_path)   
+        
+        
+def extract_title(markdown):
+    if not "h1" in markdown:
+        raise Exception("No Header 1 found")
+    return re.findall(r"<h1\b[^>]*>.*?</h1>",markdown)[0]
+
+def generate_page(from_path, template_path, dest_path):
     
-
-def extract_markdown_images(text):
-    matches = re.findall(r"!\[([^\[\]]*)\]\(([^\(\)]*)\)",text)
-    print(type(matches))
-    return matches
-
-
-def extract_markdown_links(text):
+    print(f"Generating page from {from_path} to {dest_path} using {template_path}")
     
-    matches = re.findall(r"(?<!!)\[([^\[\]]*)\]\([([^\(\)]]*)\)")
-    return matches
+    with open(from_path) as from_path_file:
+        fp_data = from_path_file.read()
+    
+    with open(template_path) as template_file:
+        tp_data = template_file.read()   
+                 
+    parsed_markdown = markdown_to_html_node(fp_data).to_html()
+    title_page = extract_title(parsed_markdown)
+    tp_data = tp_data.replace('{{ Title }}',title_page).replace('{{ Content }}', parsed_markdown)
+    
+    
+    
+    with open(dest_path , "w") as destination_path:
+        destination_path.write(tp_data)
+    
