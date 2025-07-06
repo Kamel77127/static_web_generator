@@ -24,6 +24,7 @@ TAGS = {
 
 
 def markdown_to_blocks(markdown):
+    
     return [block.strip() for block in markdown.split("\n\n") if block.strip()]
                     
             
@@ -90,7 +91,7 @@ def node_to_htmlnode(nodes,type=None,props=None,count=None):
                 if type == BlockType.CODE:
                     return ParentNode("pre",nodes,None)
                 if type == BlockType.QUOTE:
-                    return ParentNode("quote",nodes,None)
+                    return ParentNode("blockquote",nodes,None)
                 if type == BlockType.UNORDERED_LIST:
                     return ParentNode("ul",nodes,None)
                 if type == BlockType.ORDERED_LIST:

@@ -6,7 +6,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__),"src/"))
 from TextNode import TextType,TextNode
 from Htmlnode import LeafNode
 from BlockType import markdown_to_html_node
-
+from pathlib import Path
  
       
 def static_to_public_path():
@@ -34,7 +34,7 @@ def static_to_public_path():
 def extract_title(markdown):
     if not "h1" in markdown:
         raise Exception("No Header 1 found")
-    return re.findall(r"<h1\b[^>]*>.*?</h1>",markdown)[0]
+    return re.findall(r"[^<h1>].*?[^</h1>]",markdown)[0]
 
 def generate_page(from_path, template_path, dest_path):
     
@@ -54,4 +54,42 @@ def generate_page(from_path, template_path, dest_path):
     
     with open(dest_path , "w") as destination_path:
         destination_path.write(tp_data)
+
+
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
     
+    if os.listdir(dir_path_content):
+        
+        src_path = Path(dir_path_content)
+        tp_path = Path(template_path)
+        dest = Path(dest_dir_path)
+        
+        with tp_path.open('r') as tp_file:
+            tp_files = tp_file.read()
+        
+        dest.mkdir(parents=True,exist_ok=True)
+
+        for content in src_path.iterdir():
+            
+            dest_content = dest / content.name            
+            if content.is_file() and content.suffix == ".md":
+                
+                print(f"This content : {content} is a file")
+                dest_file = dest_content.with_suffix('.html')
+                
+                with content.open('r') as file:
+                    copied_file = file.read()
+                
+                html_content = markdown_to_html_node(copied_file).to_html()
+                title = extract_title(html_content)
+                tp_files = tp_files.replace('{{ Title }}', title).replace('{{ Content }}',html_content)
+                
+                with dest_file.open('w') as dest_file:
+                    dest_file.write(tp_files)
+                
+            elif content.is_dir():
+                print(f"This content : {content} is not a dir")
+                generate_pages_recursive(content,tp_path,dest_content)
+    
+    ## il faut que j'améliore extract title
+    ## il faut que j'ajoute pre code
