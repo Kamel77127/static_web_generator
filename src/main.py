@@ -8,6 +8,11 @@ from Htmlnode import LeafNode
 from BlockType import markdown_to_html_node
 from pathlib import Path
  
+ 
+ 
+ 
+ 
+
       
 def static_to_public_path():
     public_path = os.path.join(os.path.dirname(__file__),"../public")
@@ -93,3 +98,21 @@ def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
     
     ## il faut que j'améliore extract title
     ## il faut que j'ajoute pre code
+    
+    
+   
+if len(sys.argv) >= 2:
+    basePath = sys.argv[1]
+else:
+    basePath = "/"
+
+## for generate recursive path :
+dir_path_content = os.path.join(os.path.dirname(__file__), "../content")
+template_path = os.path.join(os.path.dirname(__file__),"../template.html")
+
+## for generate_page :
+
+from_path = os.path.join(os.path.dirname(__file__),"../content/index.md")
+generate_pages_recursive(dir_path_content,template_path,basePath + "docs" )
+generate_page(from_path,template_path,basePath+ "index.html")
+    
