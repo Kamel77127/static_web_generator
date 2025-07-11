@@ -16,6 +16,7 @@ from pathlib import Path
       
 def static_to_public_path(basePath):
     public_path = basePath
+    print(public_path)
     static_path = os.path.join(os.path.dirname(__file__),"../static")
     if os.path.exists(public_path):
         shutil.rmtree(public_path)
@@ -113,6 +114,8 @@ template_path = os.path.join(os.path.dirname(__file__),"../template.html")
 ## for generate_page :
 
 from_path = os.path.join(os.path.dirname(__file__),"../content/index.md")
-static_to_public_path(basePath + "docs")   
-generate_pages_recursive(dir_path_content,template_path,basePath + "docs" )
-generate_page(from_path,template_path,basePath+ "index.html")
+if generate_pages_recursive(dir_path_content,template_path,basePath + "docs"):
+    
+    static_to_public_path(basePath + "docs")   
+    generate_page(from_path,template_path,basePath+ "index.html")
+
