@@ -113,6 +113,6 @@ template_path = os.path.join(os.path.dirname(__file__),"../template.html")
 ## for generate_page :
 
 from_path = os.path.join(os.path.dirname(__file__),"../content/index.md")
-static_to_public_path(basePath)   
+static_to_public_path(basePath + "docs")   
 generate_pages_recursive(dir_path_content,template_path,basePath + "docs" )
 generate_page(from_path,template_path,basePath+ "index.html")
