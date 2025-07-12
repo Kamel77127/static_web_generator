@@ -105,9 +105,9 @@ dir_path_content = os.path.join(script_dir, "../content")
 template_path = os.path.join(script_dir,"../template.html")
 
 if len(sys.argv) >= 2:
-    basePath = os.path.join(script_dir,".." + sys.argv[1])
+    basePath = sys.argv[1]
 else:
-    basePath = os.path.join(script_dir,"../")
+    basePath = "../"
 
 des_dir_content = os.path.join(script_dir, "../docs")
 ## for generate recursive path :
