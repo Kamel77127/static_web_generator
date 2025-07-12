@@ -79,7 +79,6 @@ def generate_pages_recursive(dir_path_content, template_path, dest_dir_path, bas
             dest_content = dest / content.name            
             if content.is_file() and content.suffix == ".md":
                 
-                print(f"This content : {content} is a file")
                 dest_file = dest_content.with_suffix('.html')
                 
                 with content.open('r') as file:
@@ -88,7 +87,8 @@ def generate_pages_recursive(dir_path_content, template_path, dest_dir_path, bas
                 html_content = markdown_to_html_node(copied_file).to_html()
                 title = extract_title(html_content)
                 tp_files = tp_files.replace('{{ Title }}', title).replace('{{ Content }}',html_content)
-                tp_files = tp_files.replace('href="/', f'href="{basepath}').replace('src="/', f'src="{basepath}')
+                tp_files = tp_files.replace('href="/', f'href="{basepath}docs/').replace('src="/', f'src="{basepath}docs/')
+                print(basepath)
                 with dest_file.open('w') as dest_file:
                     dest_file.write(tp_files)
                 
