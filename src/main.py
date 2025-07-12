@@ -61,7 +61,7 @@ def generate_page(from_path, template_path, dest_path):
 
 #####
 
-def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path, basepath):
     
     if os.listdir(dir_path_content):
         
@@ -88,13 +88,13 @@ def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
                 html_content = markdown_to_html_node(copied_file).to_html()
                 title = extract_title(html_content)
                 tp_files = tp_files.replace('{{ Title }}', title).replace('{{ Content }}',html_content)
-                
+                tp_files = tp_files.replace('href="/', f'href="{basepath}').replace('src="/', f'src="{basepath}')
                 with dest_file.open('w') as dest_file:
                     dest_file.write(tp_files)
                 
             elif content.is_dir():
                 print(f"This content : {content} is not a dir")
-                generate_pages_recursive(content,tp_path,dest_content)
+                generate_pages_recursive(content,tp_path,dest_content,basepath)
     
     ## il faut que j'améliore extract title
     ## il faut que j'ajoute pre code
@@ -109,7 +109,7 @@ if len(sys.argv) >= 2:
 else:
     basePath = os.path.join(script_dir,"../")
 
-des_dir_content = os.path.join(basePath, "docs")
+des_dir_content = os.path.join(script_dir, "../docs")
 ## for generate recursive path :
-generate_pages_recursive(dir_path_content,template_path,des_dir_content)
+generate_pages_recursive(dir_path_content,template_path,des_dir_content, basePath)
 static_to_public_path(des_dir_content)   
