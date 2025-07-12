@@ -26,7 +26,7 @@ def static_to_public_path(dest_dir):
             dst_item = os.path.join(dst,item)
             if os.path.isfile(src_item):
                 shutil.copy(src_item,dst)
-                return
+                continue
             elif os.path.isdir(src_item):
                 os.mkdir(os.path.join(dst,item))
                 copy_src_to_dst(src_item,dst_item)
@@ -37,7 +37,7 @@ def static_to_public_path(dest_dir):
 def extract_title(markdown):
     if not "h1" in markdown:
         raise Exception("No Header 1 found")
-    return re.findall(r"[^<h1>].*?[^</h1>]",markdown)[0]
+    return re.findall(r"<h1>(.*?)</h1>",markdown)[0]
 
 #######
 def generate_page(from_path, template_path, dest_path):
@@ -107,7 +107,7 @@ template_path = os.path.join(script_dir,"../template.html")
 if len(sys.argv) >= 2:
     basePath = sys.argv[1]
 else:
-    basePath = "../"
+    basePath = "/"
 
 des_dir_content = os.path.join(script_dir, "../docs")
 ## for generate recursive path :
