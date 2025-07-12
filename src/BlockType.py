@@ -108,11 +108,14 @@ def node_parser(node,type):
     if type == BlockType.QUOTE:
         return node.strip(">")
     if type == BlockType.UNORDERED_LIST:
-        lines = "".join(line.strip("- ") for line in node)
+        lines = ""
+        for line in node.split("\n"):
+            lines += "".join(f"<li>{line.strip("- ")}</li>")
+        return lines
     if type == BlockType.ORDERED_LIST:
         lines = ""
         for i,line in enumerate(node.split("\n"),start=1):
-            lines += "".join(line.strip(f"{i}. ")) + "\n"
+            lines += "".join(f'<li>{line.lstrip(f"{i}. ")}</li>')
         return lines
     return node
     
