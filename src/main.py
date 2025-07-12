@@ -33,12 +33,13 @@ def static_to_public_path(dest_dir):
        
     return copy_src_to_dst(static_path , public_path)   
         
-        
+#######    
 def extract_title(markdown):
     if not "h1" in markdown:
         raise Exception("No Header 1 found")
     return re.findall(r"[^<h1>].*?[^</h1>]",markdown)[0]
 
+#######
 def generate_page(from_path, template_path, dest_path):
     
     print(f"Generating page from {from_path} to {dest_path} using {template_path}")
@@ -53,11 +54,12 @@ def generate_page(from_path, template_path, dest_path):
     title_page = extract_title(parsed_markdown)
     tp_data = tp_data.replace('{{ Title }}',title_page).replace('{{ Content }}', parsed_markdown)
     
-    
-    
     with open(dest_path , "w") as destination_path:
         destination_path.write(tp_data)
 
+
+
+#####
 
 def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
     
@@ -98,19 +100,16 @@ def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
     ## il faut que j'ajoute pre code
     
     
-   
+script_dir = os.path.dirname(__file__)
+dir_path_content = os.path.join(script_dir, "../content")
+template_path = os.path.join(script_dir,"../template.html")
+
 if len(sys.argv) >= 2:
-    basePath = sys.argv[1]
+    basePath = os.path.join(script_dir,".." + sys.argv[1])
 else:
-    basePath = "/"
+    basePath = os.path.join(script_dir,"../")
 
+des_dir_content = os.path.join(basePath, "docs")
 ## for generate recursive path :
-dir_path_content = os.path.join(os.path.dirname(__file__), "../content")
-template_path = os.path.join(os.path.dirname(__file__),"../template.html")
-final_dir_content = os.path.join(os.path.dirname(__file__), "../docs")
-static_path_content = os.path.join(os.path.dirname(__file__), "../static")
-
-generate_pages_recursive(dir_path_content,template_path, final_dir_content)
-    
-static_to_public_path(final_dir_content )   
-
+generate_pages_recursive(dir_path_content,template_path,des_dir_content)
+static_to_public_path(des_dir_content)   
