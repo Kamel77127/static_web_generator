@@ -14,12 +14,10 @@ from pathlib import Path
  
 
       
-def static_to_public_path(basePath):
-    public_path = basePath
+def static_to_public_path(dest_dir):
+    public_path = dest_dir
     static_path = os.path.join(os.path.dirname(__file__),"../static")
-    if os.path.exists(public_path):
-        shutil.rmtree(public_path)
-    os.mkdir(public_path)
+    
     
     def copy_src_to_dst(src,dst):
         
@@ -102,18 +100,17 @@ def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
     
    
 if len(sys.argv) >= 2:
-    basePath = os.path.join(os.path.dirname(__file__), ".." + sys.argv[1])
+    basePath = sys.argv[1]
 else:
-    basePath = os.path.join(os.path.dirname(__file__), "../")
+    basePath = "/"
 
 ## for generate recursive path :
 dir_path_content = os.path.join(os.path.dirname(__file__), "../content")
 template_path = os.path.join(os.path.dirname(__file__),"../template.html")
+final_dir_content = os.path.join(os.path.dirname(__file__), "../docs")
+static_path_content = os.path.join(os.path.dirname(__file__), "../static")
 
-## for generate_page :
-
-from_path = os.path.join(os.path.dirname(__file__),"../content/index.md")
-if generate_pages_recursive(dir_path_content,template_path,basePath + "docs"):
+generate_pages_recursive(dir_path_content,template_path, final_dir_content + basePath)
     
-    static_to_public_path(basePath + "docs")   
+static_to_public_path(final_dir_content + basePath )   
 
