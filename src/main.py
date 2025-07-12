@@ -110,7 +110,7 @@ template_path = os.path.join(os.path.dirname(__file__),"../template.html")
 final_dir_content = os.path.join(os.path.dirname(__file__), "../docs")
 static_path_content = os.path.join(os.path.dirname(__file__), "../static")
 
-generate_pages_recursive(dir_path_content,template_path, final_dir_content + basePath)
+generate_pages_recursive(dir_path_content,template_path, final_dir_content)
     
-static_to_public_path(final_dir_content + basePath )   
+static_to_public_path(final_dir_content )   
 
